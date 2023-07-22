@@ -168,4 +168,5 @@ public class Main {
 
 然后以如下步骤打包即可：
 
-![image](https://github.com/yoohaythem/Automated-Testing-for-Multiple-Languages/assets/53369633/ddd05c7a-dce0-4620-9f1f-8a98c5d02f1b)
+![image](https://github.com/yoohaythem/Automated-Testing-for-Multiple-Languages/assets/53369633/3cd117ea-aba5-456b-a807-91ffc056d042)
+
