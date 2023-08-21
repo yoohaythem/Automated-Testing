@@ -619,7 +619,7 @@ methodcaller(method,**args)(request)
 
 **getattr源码**
 
-最后，我们试图跟进getattr方法看其本身是如何实现的，但是不幸的是，该方法只在builtins.py中有一个类似于接口的实现，便到此为止了。出现这种情况，说明这段实现不是通过Python，而是通过其他语言来进行编写。这里我们使用的是CPython，所以我们找到CPython的代码托管地址：https://github.com/python/cpython，如果访问不上，也可以访问国内的同步地址：https://gitee.com/sync_repo/cpython?_from=gitee_search。
+最后，我们试图跟进getattr方法看其本身是如何实现的，但是不幸的是，该方法只在builtins.py中有一个类似于接口的实现，便到此为止了。出现这种情况，说明这段实现不是通过Python，而是通过其他语言来进行编写。这里我们使用的是CPython，所以我们找到CPython的代码托管地址： https://github.com/python/cpython ，如果访问不上，也可以访问国内的同步地址： https://gitee.com/sync_repo/cpython?_from=gitee_search 。
 
 进入Python同名文件夹，可以发现一个和builtins.py名字很像的文件bltinmodule.c，在1130行可以找到我们想要的代码：
 
