@@ -192,3 +192,16 @@ if "java version" in subprocess.getoutput('java -version'):
     if aes_result != host_aes_result:
         raise Exception
 ```
+  
+值得注意的是，Python里有一种启动Java虚拟机的方法，但似乎只能执行简单的打印，调类方法一直没调通  
+
+```python
+from jpype._core import startJVM, shutdownJVM, getDefaultJVMPath
+
+startJVM(getDefaultJVMPath(), "-ea", Djava, convertStrings=False)  # 启动Java虚拟机
+jpype.java.lang.System.out.println("hello world!")   # 打印，可以成功
+Java_Class = jpype.JClass("com.python.Main")   # 通过反射获取类
+# cls = Java_Class()  # 实例化
+print(Java_Class.VarLenEncrypt(Java_Class.encode(password), 30))  # 调用方法，失败
+jpype.shutdownJVM()   # 关闭Java虚拟机
+```
