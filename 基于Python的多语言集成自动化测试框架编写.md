@@ -1,7 +1,8 @@
 ### 基于Python的多语言集成自动化测试框架编写
 
-​		在自动化代码需要调用rockermq的场景下，使用python里的库，例如rocketmq-python，因其不支持在windows下使用，具有较大的缺陷。考虑到rocketmq本身就是用Java实现( https://github.com/apache/rocketmq )，所以用Java调用rocketmq是一种兼容性较高的做法。
-​		在这里，我们将调用逻辑用java编写，使用maven打成jar包，通过Python的subprocess以cmd的方式调用。
+在自动化代码需要调用rockermq的场景下，使用python里的库，例如rocketmq-python，因其不支持在windows下使用，具有较大的缺陷。考虑到rocketmq本身就是用Java实现( https://github.com/apache/rocketmq )，所以用Java调用rocketmq是一种兼容性较高的做法。  
+
+在这里，我们将调用逻辑用java编写，使用maven打成jar包，通过Python的subprocess以cmd的方式调用。
 
 #### Python
 
@@ -169,8 +170,7 @@ public class Main {
   
 #### 其他场景
 
-该方法还可以用在很多不同的场景，例如与tkinter结合，开发这样一个工具：
-
+该方法还可以用在很多不同的场景，例如与tkinter结合，开发这样一个工具：  
 通过python，利用开发后端AES校验的JAVA代码，校验测试输入密码是否正确。
 
 ```python
@@ -192,9 +192,8 @@ if "java version" in subprocess.getoutput('java -version'):
     if aes_result != host_aes_result:
         raise Exception
 ```
-  
-值得注意的是，Python里有一种启动Java虚拟机的方法，但似乎只能执行简单的打印，调类方法一直没调通  
 
+值得注意的是，Python里有一种启动Java虚拟机的方法，但似乎只能执行简单的打印，调类方法一直没调通。
 ```python
 from jpype._core import startJVM, shutdownJVM, getDefaultJVMPath
 
