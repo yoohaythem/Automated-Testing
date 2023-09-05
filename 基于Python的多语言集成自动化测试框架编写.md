@@ -186,7 +186,7 @@ if "java version" in subprocess.getoutput('java -version'):
     jarpath = ExePath + "webinstall_AES.jar"  # 生成的 jar 包路径
     bytes = subprocess.check_output(f"java -jar {jarpath} {password}", shell=True)
     aes_result = bytes.strip().decode("utf-8")    # 根据输入密码查询到的密文
-    host_aes_result = myssh.exec_shell(ssh_webinstall,"cat /home/zxcloudsetup/was/tomcat/webapps/ROOT/WEB-INF/classes/conf/minidb.properties|grep passWord=").strip().replace('\\', '')[9:]    # 主机上查询密文
+    host_aes_result = myssh.exec_shell(ssh_webinstall,"cat /xxx/xxxdb.properties|grep passWord=").strip().replace('\\', '')[9:]    # 主机上查询密文
     print("输入密码加密密文为：" + aes_result)
     print("主机上密文为：" + host_aes_result)
     if aes_result != host_aes_result:
