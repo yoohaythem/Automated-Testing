@@ -54,6 +54,14 @@ if...else...也许是代码里不可或缺的判断，但如何更好地优化�
 
 "if... else...", they may be essential judgments in the code, but how do you optimize them? This best practice article may give you some new ideas.
 
+----
+
+#### 5. Python多数据库查询的优化
+#### multi-database query optimization by Python
+
+进程、线程、协程，或是都不使用，哪一种方案对数据库连接效果最好呢？
+
+Multiprocess, multithreaded, coroutine, or none of the above, which solution works best for database connectivity?
 
 
 
