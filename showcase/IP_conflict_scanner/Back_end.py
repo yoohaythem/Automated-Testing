@@ -39,11 +39,39 @@ def query_database(db_config, query):
         return ""
 
 
+# 定义IP过滤函数
+def IP_filter(str_input):
+    global result_str
+    host_ips = []
+    pattern = '((?:25[0-5]|2[0-4]\d|1\d{2}|[1-9]\d|\d)\.){3}(?:25[0-5]|2[0-4]\d|1\d{2}|[1-9]\d|\d)'    # IP地址正则
+    mask = '(?:2[2-9]|3[0-1])'   # 扫描范围不能太大，需要限制在 2-1024
+    if str_input != "":
+        for item in re.split(",|，", str_input):
+            item = item.strip().strip("'")
+            if re.match(rf'^{pattern}/{mask}$', item):  # 以掩码形式给出IP
+                network = ipaddress.ip_network(item, strict=False)
+                host_ips.extend([str(ip) for ip in network.hosts()])
+            elif re.match(rf'^{pattern}-{pattern}$', item):  # 以范围形式给出IP
+                start_ip, end_ip = re.findall(r'\d+\.\d+\.\d+\.\d+', item)
+                # 将起始IP地址和结束IP地址转换为IPv4Address对象
+                start_ip = ipaddress.ip_address(start_ip)
+                end_ip = ipaddress.ip_address(end_ip)
+                # 生成IP列表
+                host_ips.extend([str(ipaddress.ip_address(ip)) for ip in range(int(start_ip), int(end_ip) + 1)])
+            elif re.match(rf'^{pattern}$', item):
+                host_ips.append(item)
+            else:
+                print(f"[{item}] 的IP地址格式有误")
+                result_str += f"[{item}] 的IP地址格式有误\n"
+    return host_ips
+
+
 # 定义主函数
 @measure_time
-def main(host_ips, port, username, password, database, vm_mac, check_con_flag=1):
+def main(str_input, port, username, password, database, vm_mac, check_con_flag=1):
     global result_str
     result_str = ""
+    host_ips = IP_filter(str_input)
     # 有的环境上没有管理员权限，无法执行ping -c, 把check_con_flag置为0就行
     if check_con_flag:
         def check_connectivity(ip):
@@ -94,8 +122,8 @@ def main(host_ips, port, username, password, database, vm_mac, check_con_flag=1)
 
 if __name__ == '__main__':
     # 定义主机IP地址、用户名、密码、数据库名和表名等参数
-    str_input = "192.168.1.100,192.168.1.101,192.168.1.102"  # 用英文逗号分割
-    host_ips = [] if str_input == "" else [item.strip().strip("'") for item in str_input.split(",")]
+    str_input = "192.168.1.100，172.168.1.101-172.168.1.105,10.10.10.0/26"  # 用逗号分割
+    # host_ips = [] if str_input == "" else [item.strip().strip("'") for item in str_input.split(",")]
     port = 3306
     username = 'admin'
     password = 'admin'
@@ -103,4 +131,4 @@ if __name__ == '__main__':
     vm_mac = 'DC:21:5C:84:9B:26'
 
     # 调用主函数
-    main(host_ips, port, username, password, database, vm_mac)
+    main(str_input, port, username, password, database, vm_mac)
