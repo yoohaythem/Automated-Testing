@@ -125,7 +125,7 @@ class Win(WinGUI):
         str_input = self.tk_text_input_message.get("1.0", "end-1c")
         vm_mac = self.tk_text_mac_message.get("1.0", "end-1c")
         # 定义用户名、密码、端口号、数据库名等参数
-        host_ips = [] if str_input == "" else [item.strip().strip("'") for item in str_input.split(",")]
+        # host_ips = [] if str_input == "" else [item.strip().strip("'") for item in str_input.split(",")]
         port = 3306
         username = 'admin'
         password = 'admin'
@@ -136,7 +136,7 @@ class Win(WinGUI):
             self.tk_button_submit.config(state="disabled")
             self.tk_button_submit.unbind('<Button-1>')
             # 调用主函数
-            res = main(host_ips, port, username, password, database, vm_mac)
+            res = main(str_input, port, username, password, database, vm_mac)
             # 按钮恢复
             self.tk_button_submit.config(state="enabled")
             self.__event_bind()
