@@ -73,7 +73,7 @@ class WinGUI(Tk):
     def __tk_text_input_message(self, parent):  # 环境地址
         text = Text(parent)
         text.place(x=160, y=90, width=346, height=75)
-        text.insert("end", "192.168.1.100,192.168.1.101,192.168.1.102")
+        text.insert("end", "192.168.1.100，172.168.1.101-172.168.1.105,10.10.10.0/28，111")
         return text
 
     def __tk_label_input(self, parent):

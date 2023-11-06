@@ -1,10 +1,15 @@
 import concurrent.futures
 import copy
+import ipaddress
+import re
 import subprocess
+import threading
 import pymysql
 import time
 
 result_str = ""
+# 创建一个锁对象
+lock = threading.Lock()
 
 
 def measure_time(func):
@@ -43,10 +48,10 @@ def query_database(db_config, query):
 def IP_filter(str_input):
     global result_str
     host_ips = []
-    pattern = '((?:25[0-5]|2[0-4]\d|1\d{2}|[1-9]\d|\d)\.){3}(?:25[0-5]|2[0-4]\d|1\d{2}|[1-9]\d|\d)'    # IP地址正则
-    mask = '(?:2[2-9]|3[0-1])'   # 扫描范围不能太大，需要限制在 2-1024
+    pattern = '((?:25[0-5]|2[0-4]\d|1\d{2}|[1-9]\d|\d)\.){3}(?:25[0-5]|2[0-4]\d|1\d{2}|[1-9]\d|\d)'  # IP地址正则
+    mask = '(?:2[2-9]|3[0-1])'  # 扫描范围不能太大，需要限制在 2-1024
     if str_input != "":
-        for item in re.split(",|，", str_input):
+        for item in re.split("[,，]", str_input):
             item = item.strip().strip("'")
             if re.match(rf'^{pattern}/{mask}$', item):  # 以掩码形式给出IP
                 network = ipaddress.ip_network(item, strict=False)
@@ -61,8 +66,12 @@ def IP_filter(str_input):
             elif re.match(rf'^{pattern}$', item):
                 host_ips.append(item)
             else:
+                # 获取锁
+                lock.acquire()
                 print(f"[{item}] 的IP地址格式有误")
                 result_str += f"[{item}] 的IP地址格式有误\n"
+                # 释放锁
+                lock.release()
     return host_ips
 
 
@@ -84,8 +93,12 @@ def main(str_input, port, username, password, database, vm_mac, check_con_flag=1
                                     stderr=subprocess.PIPE, startupinfo=si)
             # 检查ping命令的返回码，0表示连通，其他值表示不连通
             if result.returncode:
+                # 获取锁
+                lock.acquire()
                 print(f"{ip} 不可达，请检查网络！")
                 result_str += f"{ip} 不可达，请检查网络！\n"
+                # 获取锁
+                lock.release()
                 host_ips.remove(ip)
 
         with concurrent.futures.ThreadPoolExecutor() as executor:
@@ -109,9 +122,13 @@ def main(str_input, port, username, password, database, vm_mac, check_con_flag=1
             for i in range(len(results)):
                 # 输出查询结果
                 if len(results[i]):
+                    # 获取锁
+                    lock.acquire()
                     count += 1
                     print(f"{count}. 环境 [{host_ips[i]}] 上MAC地址为 [{vm_mac}] 的虚机为：{results[i]}")
                     result_str += f"{count}. 环境 [{host_ips[i]}] 上MAC地址为 [{vm_mac}] 的虚机为：{results[i]}\n"
+                    # 获取锁
+                    lock.release()
     except ValueError:
         print(f"有效IP列表为空异常")
         result_str += f"有效IP列表为空异常\n"
@@ -122,7 +139,7 @@ def main(str_input, port, username, password, database, vm_mac, check_con_flag=1
 
 if __name__ == '__main__':
     # 定义主机IP地址、用户名、密码、数据库名和表名等参数
-    str_input = "192.168.1.100，172.168.1.101-172.168.1.105,10.10.10.0/26"  # 用逗号分割
+    str_input = "192.168.1.100，172.168.1.101-172.168.1.105,10.10.10.0/28，111"  # 用逗号分割
     # host_ips = [] if str_input == "" else [item.strip().strip("'") for item in str_input.split(",")]
     port = 3306
     username = 'admin'
