@@ -97,9 +97,9 @@ def main(str_input, port, username, password, database, vm_mac, check_con_flag=1
                 lock.acquire()
                 print(f"{ip} 不可达，请检查网络！")
                 result_str += f"{ip} 不可达，请检查网络！\n"
+                host_ips.remove(ip)
                 # 获取锁
                 lock.release()
-                host_ips.remove(ip)
 
         with concurrent.futures.ThreadPoolExecutor() as executor:
             # 提交任务并获取结果
