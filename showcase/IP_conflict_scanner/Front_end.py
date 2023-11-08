@@ -1,4 +1,4 @@
-import ctypes
+# import ctypes
 from threading import Thread
 from tkinter import *
 from tkinter.ttk import *
