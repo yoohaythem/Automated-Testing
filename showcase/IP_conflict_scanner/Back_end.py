@@ -80,6 +80,12 @@ def IP_filter(str_input):
 def main(str_input, port, username, password, database, vm_mac, check_con_flag=1):
     global result_str
     result_str = ""
+    if "彩蛋" in str_input:
+        result_str = "\n对酒当歌，人生几何！譬如朝露，去日苦多。\n\n"
+        return
+    elif "于海翔" in str_input:
+        result_str = "\n阁下找我何事？\n\n"
+        return
     host_ips = IP_filter(str_input)
     # 有的环境上没有管理员权限，无法执行ping -c, 把check_con_flag置为0就行
     if check_con_flag:
