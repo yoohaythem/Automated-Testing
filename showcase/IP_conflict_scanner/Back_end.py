@@ -19,8 +19,9 @@ def measure_time(func):
         result = func(*args, **kwargs)
         end_time = time.time()
         execution_time = end_time - start_time
-        print(f"运行时间为 {execution_time:.2f} 秒")
-        result_str += f"运行时间为 {execution_time:.2f} 秒\n"
+        if result is not None:
+            print(f"运行时间为 {execution_time:.2f} 秒")
+            result_str += f"运行时间为 {execution_time:.2f} 秒\n"
         return result_str
 
     return wrapper
