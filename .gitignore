@@ -1,1 +1,4 @@
-/showcase/test/
+**/test/
+**/build/
+**/dist/
+**.spec

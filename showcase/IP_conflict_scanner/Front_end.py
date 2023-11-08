@@ -2,7 +2,7 @@ import ctypes
 from threading import Thread
 from tkinter import *
 from tkinter.ttk import *
-
+# from PIL import Image, ImageTk  # 导入PIL库用于图像处理，会导致打包后体积过大
 from Back_end import main
 
 
@@ -10,6 +10,10 @@ class WinGUI(Tk):
     def __init__(self):
         super().__init__()
         self.__win()
+        # 加载并缩放图片
+        # self.image = ImageTk.PhotoImage(Image.open("log.png").resize((25, 25), Image.LANCZOS))  # 创建PhotoImage对象
+        self.image = PhotoImage(file="log.png").subsample(3)
+        self.tk_button_log = self.__tk_button_log(self)
         self.tk_text_input_message = self.__tk_text_input_message(self)
         self.tk_label_input = self.__tk_label_input(self)
         self.tk_label_output = self.__tk_label_output(self)
@@ -70,6 +74,26 @@ class WinGUI(Tk):
             self.h_scrollbar(hbar, widget, x, y, w, h, pw, ph)
         self.scrollbar_autohide(vbar, hbar, widget)
 
+    def show_message(self):
+        popup = Toplevel(self)
+        popup.title("更新日志")
+        popup.geometry("460x410")  # 设置窗口尺寸
+
+        # 从文本文件中读取消息内容，使用UTF-8编码
+        with open("README.md", "r", encoding="utf-8") as file:
+            content = file.read()
+
+        # 移除文本中的 '#' 字符
+        content = content.replace("#", "")
+        content = content.replace(". ", ".")
+
+        # 创建一个Label，并将文本内容设置为README.md的内容
+        message_label = Label(popup, text=content, anchor="w", compound="top", justify="left", wraplength=435)
+        message_label.pack(expand=True, fill="both", padx=10, pady=(10, 0))
+
+        close_button = Button(popup, text="关闭", command=popup.destroy)
+        close_button.pack(side="bottom", pady=10)  # 调整关闭按钮位置
+
     def __tk_text_input_message(self, parent):  # 环境地址
         text = Text(parent)
         text.place(x=160, y=90, width=346, height=75)
@@ -112,6 +136,11 @@ class WinGUI(Tk):
         label = Label(parent, text="(多地址用逗号分割)", anchor="center", )
         label.place(x=30, y=110, width=113, height=30)
         return label
+
+    def __tk_button_log(self, parent):
+        log_button = Button(parent, image=self.image, command=self.show_message)
+        log_button.place(x=526, y=420)
+        return log_button
 
 
 class Win(WinGUI):
