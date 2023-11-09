@@ -4,6 +4,23 @@ from tkinter import *
 from tkinter.ttk import *
 # from PIL import Image, ImageTk  # 导入PIL库用于图像处理，会导致打包后体积过大
 from Back_end import main
+import os
+import sys
+
+
+# 资源文件目录访问
+def source_path(relative_path):
+    # 是否Bundle Resource
+    if getattr(sys, 'frozen', False):
+        base_path = sys._MEIPASS
+    else:
+        base_path = os.path.abspath(".")
+    return os.path.join(base_path, relative_path)
+
+
+# 修改当前工作目录，使得资源文件可以被正确访问
+cd = source_path('')
+os.chdir(cd)
 
 
 class WinGUI(Tk):
