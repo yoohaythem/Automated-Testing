@@ -159,7 +159,7 @@ class WinGUI(Tk):
         return label
 
     def __tk_button_log(self, parent):
-        log_button = Button(parent, image=self.image, command=self.show_message)
+        log_button = Button(parent, image=self.image, command=self.show_message, takefocus=False)
         log_button.place(x=526, y=420)
         return log_button
 
