@@ -79,9 +79,13 @@ class WinGUI(Tk):
         popup.title("更新日志")
         popup.geometry("460x410")  # 设置窗口尺寸
 
-        # 从文本文件中读取消息内容，使用UTF-8编码
-        with open("README.md", "r", encoding="utf-8") as file:
-            content = file.read()
+        # 从文本文件中读取消息内容，使用UTF-8或gbk编码
+        try:
+            with open("README.md", "r", encoding="utf-8") as file:
+                content = file.read()
+        except:
+            with open("README.md", "r", encoding="gbk") as file:
+                content = file.read()
 
         # 移除文本中的 '#' 字符
         content = content.replace("#", "")
